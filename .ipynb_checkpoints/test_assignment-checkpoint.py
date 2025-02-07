@@ -1,3 +1,4 @@
+from unittest.mock import patch
 import io
 import sys
 import pytest
@@ -56,15 +57,15 @@ def test_for_loop_skip_divisible_by_3(capsys):
     for actual, expect in zip(captured, expected):
         assert actual.strip() == expect, f"Expected {expect}, got {actual}"
 
+
 def test_number_classification():
     """Test if-else number classification"""
-    # Capture stdout
+    # Helper function to capture input and output
     def test_input(input_val):
         # Redirect stdin and stdout
         old_stdin = sys.stdin
+        old_stdout = sys.stdout
         sys.stdin = io.StringIO(str(input_val))
-        
-        
         captured_output = io.StringIO()
         sys.stdout = captured_output
         
@@ -74,15 +75,19 @@ def test_number_classification():
         finally:
             # Restore stdin and stdout
             sys.stdin = old_stdin
-            sys.stdout = sys.__stdout__
+            sys.stdout = old_stdout
         
-        return captured_output.getvalue().strip()
+        # Get the captured output
+        output = captured_output.getvalue().strip()
+        return output
 
     # Test cases
     assert "negative" in test_input(-5).lower(), "Failed to identify negative number"
     assert "positive" in test_input(10).lower(), "Failed to identify positive number"
     assert "zero" in test_input(0).lower(), "Failed to identify zero"
 
+        
+        
 def test_multiplication_table(capsys):
     """Test nested loops multiplication table"""
     assignment.multiplication_table()
